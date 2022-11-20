@@ -1,4 +1,4 @@
-class PermessageDeflate
+class BrotliAndCheese
   class Session
 
     VALID_PARAMS = [
@@ -41,28 +41,31 @@ class PermessageDeflate
       @request_no_context_takeover = options.fetch(:request_no_context_takeover, false)
       @request_max_window_bits     = options.fetch(:request_max_window_bits, nil)
 
-      @deflate = @inflate = nil
+      # @deflate = @inflate = nil
     end
 
     def process_incoming_message(message)
       return message unless message.rsv1
 
-      inflate = get_inflate
+      # inflate = get_inflate
 
-      message.data = inflate.inflate(message.data) +
-                     inflate.inflate([0x00, 0x00, 0xff, 0xff].pack('C*'))
+      # message.data = inflate.inflate(message.data) +
+      #                inflate.inflate([0x00, 0x00, 0xff, 0xff].pack('C*'))
 
-      free(inflate) unless @inflate
+      message.data = Brotli.inflate(message.data) + Brotli.inflate([0x00, 0x00, 0xff, 0xff].pack('C*'))
+
+      # free(inflate) unless @inflate
       message
     end
 
     def process_outgoing_message(message)
-      deflate = get_deflate
+      # deflate = get_deflate
 
-      message.data = deflate.deflate(message.data, Zlib::SYNC_FLUSH)[0...-4]
+      # message.data = deflate.deflate(message.data, Zlib::SYNC_FLUSH)[0...-4]
+      message.data = Brotli.deflate(message.data, {quality: 5})
       message.rsv1 = true
 
-      free(deflate) unless @deflate
+      # free(deflate) unless @deflate
       message
     end
 

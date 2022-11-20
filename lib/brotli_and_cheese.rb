@@ -1,10 +1,11 @@
 require 'zlib'
+require 'brotli'
 
-class PermessageDeflate
+class BrotliAndCheese
   root = File.expand_path('..', __FILE__)
-  require root + '/permessage_deflate/session'
-  require root + '/permessage_deflate/client_session'
-  require root + '/permessage_deflate/server_session'
+  require root + '/brotli_and_cheese/session'
+  require root + '/brotli_and_cheese/client_session'
+  require root + '/brotli_and_cheese/server_session'
 
   ConfigurationError = Class.new(ArgumentError)
 
@@ -36,9 +37,9 @@ class PermessageDeflate
     def configure(options)
       @options ||= nil
 
-      PermessageDeflate.validate_options(options, VALID_OPTIONS)
+      BrotliAndCheese.validate_options(options, VALID_OPTIONS)
       options = (@options || {}).merge(options)
-      PermessageDeflate.new(options)
+      BrotliAndCheese.new(options)
     end
 
     def create_client_session

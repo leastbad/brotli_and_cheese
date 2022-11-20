@@ -1,4 +1,4 @@
-class PermessageDeflate
+class BrotliAndCheese
   class ServerSession < Session
 
     def self.valid_params?(params)
